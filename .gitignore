@@ -1,0 +1,6 @@
+.env
+node_modules/
+dist/
+build/
+*.exe
+7z2600-extra/

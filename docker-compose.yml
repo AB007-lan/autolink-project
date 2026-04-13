@@ -1,0 +1,62 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: autolink-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: autolink_db
+      POSTGRES_USER: autolink_user
+      POSTGRES_PASSWORD: AutoL1nk@2026!Secure
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - autolink-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U autolink_user -d autolink_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: autolink-redis
+    restart: always
+    command: redis-server --requirepass AutoL1nkR3d1s@2026
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - autolink-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: autolink-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@autolink.mr
+      PGADMIN_DEFAULT_PASSWORD: AdminAutolink2026!
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - autolink-network
+
+networks:
+  autolink-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
