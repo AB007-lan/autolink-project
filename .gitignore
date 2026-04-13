@@ -1,6 +1,18 @@
+# env files
 .env
+.env.local
+frontend/.env.local
+backend/.env
+backend/.env.local
+
+# dependencies
 node_modules/
+
+# build
 dist/
 build/
+
+# system
+.DS_Store
 *.exe
-7z2600-extra/
+
