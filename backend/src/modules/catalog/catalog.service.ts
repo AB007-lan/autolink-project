@@ -157,18 +157,32 @@ export class CatalogService {
 
   async findByBoutique(boutiqueId: string, ownerId?: string) {
     const where: any = { boutiqueId };
-
-    if (!ownerId) {
-      where.status = ProductStatus.ACTIVE;
-    }
-
-    const products = await this.productRepository.find({
+    if (!ownerId) where.status = ProductStatus.ACTIVE;
+    return this.productRepository.find({
       where,
       relations: ['compatibilities'],
       order: { createdAt: 'DESC' },
     });
+  }
 
-    return products;
+  async findMyProducts(ownerId: string, query: ProductQueryDto) {
+    const boutique = await this.boutiquesService.findByOwner(ownerId);
+    const { search, page = 1, limit = 20 } = query;
+    const skip = (page - 1) * limit;
+
+    const qb = this.productRepository
+      .createQueryBuilder('product')
+      .where('product.boutique_id = :boutiqueId', { boutiqueId: boutique.id })
+      .andWhere('product.deleted_at IS NULL');
+
+    if (search) {
+      qb.andWhere('product.name ILIKE :search', { search: `%${search}%` });
+    }
+
+    qb.orderBy('product.created_at', 'DESC').skip(skip).take(limit);
+
+    const [items, total] = await qb.getManyAndCount();
+    return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
   async update(

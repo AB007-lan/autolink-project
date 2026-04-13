@@ -16,6 +16,7 @@ import { MessagingModule } from './modules/messaging/messaging.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { VehiclesModule } from './modules/vehicles/vehicles.module';
 
 // Guards & Interceptors
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -99,6 +100,7 @@ import { Conversation, Message } from './modules/messaging/entities/message.enti
     NotificationsModule,
     StorageModule,
     AdminModule,
+    VehiclesModule,
   ],
   providers: [
     // Guards globaux

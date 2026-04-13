@@ -30,7 +30,7 @@ export default function BoutiqueCatalogPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['boutique-products', search, page],
     queryFn: () =>
-      productsApi.getAll({ myBoutique: true, search: search || undefined, page, limit: 12 }),
+      productsApi.getMyBoutiqueProducts({ search: search || undefined, page, limit: 12 }),
     enabled: isAuthenticated && user?.role === 'boutique',
   });
 

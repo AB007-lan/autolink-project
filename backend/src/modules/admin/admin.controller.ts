@@ -75,6 +75,39 @@ export class AdminController {
     return this.adminService.getTopBoutiques(+limit);
   }
 
+  @Get('boutiques')
+  @ApiOperation({ summary: 'Liste toutes les boutiques' })
+  getAllBoutiques(
+    @Query('page') page = 1,
+    @Query('limit') limit = 20,
+    @Query('status') status?: string,
+    @Query('search') search?: string,
+  ) {
+    return this.adminService.getAllBoutiques(+page, +limit, status, search);
+  }
+
+  @Get('products')
+  @ApiOperation({ summary: 'Liste tous les produits' })
+  getAllProducts(
+    @Query('page') page = 1,
+    @Query('limit') limit = 20,
+    @Query('status') status?: string,
+    @Query('search') search?: string,
+  ) {
+    return this.adminService.getAllProducts(+page, +limit, status, search);
+  }
+
+  @Get('orders')
+  @ApiOperation({ summary: 'Liste toutes les commandes' })
+  getAllOrders(
+    @Query('page') page = 1,
+    @Query('limit') limit = 20,
+    @Query('status') status?: string,
+    @Query('search') search?: string,
+  ) {
+    return this.adminService.getAllOrders(+page, +limit, status, search);
+  }
+
   @Get('audit-logs')
   @ApiOperation({ summary: 'Logs d\'audit' })
   getAuditLogs(

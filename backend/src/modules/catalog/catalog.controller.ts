@@ -63,6 +63,17 @@ export class CatalogController {
     return this.catalogService.getFeaturedProducts();
   }
 
+  @Get('my')
+  @ApiBearerAuth()
+  @Roles(UserRole.BOUTIQUE)
+  @ApiOperation({ summary: 'Produits de ma boutique' })
+  getMyProducts(
+    @CurrentUser('id') userId: string,
+    @Query() query: ProductQueryDto,
+  ) {
+    return this.catalogService.findMyProducts(userId, query);
+  }
+
   @Public()
   @Get('categories')
   @ApiOperation({ summary: 'Liste des catégories' })

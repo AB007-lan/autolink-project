@@ -50,10 +50,10 @@ export default function AdminDashboardPage() {
   });
 
   const verifyBoutiqueMutation = useMutation({
-    mutationFn: ({ id, isVerified }: { id: string; isVerified: boolean }) =>
-      boutiquesApi.verify(id, { isVerified }),
+    mutationFn: ({ id, approve }: { id: string; approve: boolean }) =>
+      boutiquesApi.verify(id, { status: approve ? 'verified' : 'rejected' }),
     onSuccess: (_, vars) => {
-      toast.success(vars.isVerified ? 'Boutique approuvée' : 'Boutique refusée');
+      toast.success(vars.approve ? 'Boutique approuvée ✓' : 'Boutique refusée');
       qc.invalidateQueries({ queryKey: ['pending-boutiques'] });
       qc.invalidateQueries({ queryKey: ['admin-dashboard'] });
     },
@@ -186,7 +186,7 @@ export default function AdminDashboardPage() {
                         <Eye className="w-4 h-4" />
                       </Link>
                       <button
-                        onClick={() => verifyBoutiqueMutation.mutate({ id: boutique.id, isVerified: true })}
+                        onClick={() => verifyBoutiqueMutation.mutate({ id: boutique.id, approve: true })}
                         disabled={verifyBoutiqueMutation.isPending}
                         className="flex items-center gap-1.5 px-3 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 disabled:opacity-60"
                       >
@@ -194,7 +194,7 @@ export default function AdminDashboardPage() {
                         Approuver
                       </button>
                       <button
-                        onClick={() => verifyBoutiqueMutation.mutate({ id: boutique.id, isVerified: false })}
+                        onClick={() => verifyBoutiqueMutation.mutate({ id: boutique.id, approve: false })}
                         disabled={verifyBoutiqueMutation.isPending}
                         className="flex items-center gap-1.5 px-3 py-2 border border-red-200 text-red-600 text-sm font-medium rounded-lg hover:bg-red-50 disabled:opacity-60"
                       >

@@ -61,9 +61,13 @@ export const productsApi = {
   getAll: (params?: any) => api.get('/products', { params }),
   getFeatured: () => api.get('/products/featured'),
   getCategories: () => api.get('/products/categories'),
-  getVehicleBrands: () => api.get('/products/vehicles/brands'),
-  getVehicleModels: (brand: string) => api.get(`/products/vehicles/${brand}/models`),
+  // Utilise le module vehicles dédié pour les marques/modèles
+  getVehicleBrands: () => api.get('/vehicles/brands'),
+  getVehicleModels: (brand: string) => api.get('/vehicles/models', { params: { brand } }),
+  getVehicleYears: () => api.get('/vehicles/years'),
   getOne: (id: string) => api.get(`/products/${id}`),
+  // Produits de ma boutique (endpoint dédié)
+  getMyBoutiqueProducts: (params?: any) => api.get('/products/my', { params }),
   create: (data: any) => api.post('/products', data),
   update: (id: string, data: any) => api.put(`/products/${id}`, data),
   delete: (id: string) => api.delete(`/products/${id}`),
@@ -105,10 +109,17 @@ export const adminApi = {
   getUsers: (params?: any) => api.get('/admin/users', { params }),
   updateUserStatus: (id: string, status: string) =>
     api.patch(`/admin/users/${id}/status`, { status }),
+  // Boutiques
+  getAllBoutiques: (params?: any) => api.get('/admin/boutiques', { params }),
   getPendingBoutiques: () => api.get('/admin/boutiques/pending'),
-  getPendingProducts: (params?: any) => api.get('/admin/products/pending', { params }),
-  getRevenueByMonth: () => api.get('/admin/revenue/monthly'),
   getTopBoutiques: () => api.get('/admin/boutiques/top'),
+  // Products
+  getAllProducts: (params?: any) => api.get('/admin/products', { params }),
+  getPendingProducts: (params?: any) => api.get('/admin/products/pending', { params }),
+  // Orders
+  getAllOrders: (params?: any) => api.get('/admin/orders', { params }),
+  // Revenue
+  getRevenueByMonth: () => api.get('/admin/revenue/monthly'),
 };
 
 // Upload

@@ -161,6 +161,82 @@ export class AdminService {
     });
   }
 
+  async getAllBoutiques(page = 1, limit = 20, status?: string, search?: string) {
+    const skip = (page - 1) * limit;
+
+    const qb = this.boutiqueRepository
+      .createQueryBuilder('boutique')
+      .leftJoinAndSelect('boutique.owner', 'owner')
+      .where('boutique.deleted_at IS NULL');
+
+    if (status) {
+      qb.andWhere('boutique.status = :status', { status });
+    }
+
+    if (search) {
+      qb.andWhere(
+        '(boutique.name ILIKE :search OR boutique.email ILIKE :search OR owner.email ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+
+    qb.orderBy('boutique.created_at', 'DESC').skip(skip).take(limit);
+
+    const [items, total] = await qb.getManyAndCount();
+    return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
+  }
+
+  async getAllProducts(page = 1, limit = 20, status?: string, search?: string) {
+    const skip = (page - 1) * limit;
+
+    const qb = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.boutique', 'boutique')
+      .where('product.deleted_at IS NULL');
+
+    if (status) {
+      qb.andWhere('product.status = :status', { status });
+    }
+
+    if (search) {
+      qb.andWhere(
+        '(product.name ILIKE :search OR product.reference ILIKE :search OR boutique.name ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+
+    qb.orderBy('product.created_at', 'DESC').skip(skip).take(limit);
+
+    const [items, total] = await qb.getManyAndCount();
+    return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
+  }
+
+  async getAllOrders(page = 1, limit = 20, status?: string, search?: string) {
+    const skip = (page - 1) * limit;
+
+    const qb = this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.client', 'client')
+      .leftJoinAndSelect('order.boutique', 'boutique')
+      .leftJoinAndSelect('order.items', 'items');
+
+    if (status) {
+      qb.andWhere('order.status = :status', { status });
+    }
+
+    if (search) {
+      qb.andWhere(
+        '(order.order_number ILIKE :search OR client.email ILIKE :search OR boutique.name ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+
+    qb.orderBy('order.created_at', 'DESC').skip(skip).take(limit);
+
+    const [items, total] = await qb.getManyAndCount();
+    return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
+  }
+
   async getAuditLogs(page = 1, limit = 50) {
     // Placeholder - à implémenter avec une vraie table d'audit
     return { items: [], total: 0, page, limit };

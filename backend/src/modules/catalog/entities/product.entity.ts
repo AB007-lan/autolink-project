@@ -92,6 +92,9 @@ export class Product extends BaseEntity {
 
   @Column({ name: 'weight_kg', type: 'decimal', precision: 8, scale: 3, nullable: true })
   weightKg: number;
+
+  @OneToMany(() => VehicleCompatibility, (compat) => compat.product)
+  compatibilities: VehicleCompatibility[];
 }
 
 @Entity('categories')
